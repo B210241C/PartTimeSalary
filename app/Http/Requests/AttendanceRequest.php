@@ -25,9 +25,8 @@ class AttendanceRequest extends FormRequest
     {
         return
         [
-			'userid' => 'required',
 			'timein' => 'required',
-			'timeout' => 'required',
+			'timeout' => 'required|after:timein',
 			'date' => 'required',
         ];
     }

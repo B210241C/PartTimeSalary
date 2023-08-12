@@ -25,5 +25,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::resource('branches', BranchesController::class);
 Route::resource('attendances', AttendancesController::class);
+Route::get('approveattendance',[AttendancesController::class,'approveattendance']);
+Route::post('approveattendance',[AttendancesController::class,'approve']);
 
 

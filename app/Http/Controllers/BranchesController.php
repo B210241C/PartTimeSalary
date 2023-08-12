@@ -57,12 +57,13 @@ class BranchesController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
+     *
      * @return \Illuminate\Contracts\View\View
      */
-    public function edit($id)
+    public function edit($id,$timein)
     {
         $branch = Branch::findOrFail($id);
-        return view('branches.edit',['branch'=>$branch]);
+        return view('branches.edit',['branch'=>$branch,$timein]);
     }
 
     /**

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-
+use App\Models\Branch;
 use App\Models\Attendance;
 use App\Http\Requests\AttendanceRequest;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 class AttendancesController extends Controller
 {
     /**
@@ -16,7 +18,10 @@ class AttendancesController extends Controller
      */
     public function index()
     {
-        $attendances= Attendance::all();
+        $attendances= DB::table('attendances')
+            ->select('attendances.id','attendances.timein', 'attendances.timeout', 'attendances.date', 'attendances.status', 'attendances.duration','branches.name as bname')
+            ->join('branches','attendances.branchid','=','branches.id')
+            ->get();
         return view('attendances.index', ['attendances'=>$attendances]);
     }
 
@@ -27,7 +32,8 @@ class AttendancesController extends Controller
      */
     public function create()
     {
-        return view('attendances.create');
+        $branches= Branch::all();
+        return view('attendances.create',['data'=>$branches]);
     }
 
     /**
@@ -38,11 +44,19 @@ class AttendancesController extends Controller
      */
     public function store(AttendanceRequest $request)
     {
+        $diff=Carbon::parse($request->input('timein'))->diffInMinutes(Carbon::parse($request->input('timeout')));
+        $newdiff=date('H:i',mktime(0,intdiv($diff,30)*30));
+
+
+
         $attendance = new Attendance;
-		$attendance->userid = Auth::id();
-		$attendance->timein = $request->input('timein');
-		$attendance->timeout = $request->input('timeout');
-		$attendance->date = $request->input('date');
+        $attendance->userid = Auth::id();
+        $attendance->timein = $request->input('timein');
+        $attendance->timeout = $request->input('timeout');
+        $attendance->date = $request->input('date');
+        $attendance->status = "pending";
+        $attendance->branchid = $request->input('branchid');
+        $attendance->duration = $newdiff;
         $attendance->save();
 
         return to_route('attendances.index');
@@ -54,11 +68,7 @@ class AttendancesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\View\View
      */
-    public function show($id)
-    {
-        $attendance = Attendance::findOrFail($id);
-        return view('attendances.show',['attendance'=>$attendance]);
-    }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -68,8 +78,10 @@ class AttendancesController extends Controller
      */
     public function edit($id)
     {
-        $attendance = Attendance::findOrFail($id);
-        return view('attendances.edit',['attendance'=>$attendance]);
+
+        $branches= Branch::all();
+        $data= Attendance::findOrFail($id);
+        return view('attendances.edit',['data'=>$branches,'datas'=>$data]);
     }
 
     /**
@@ -80,12 +92,18 @@ class AttendancesController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(AttendanceRequest $request, $id)
+
     {
+        $diff=Carbon::parse($request->input('timein'))->diffInMinutes(Carbon::parse($request->input('timeout')));
+        $newdiff=date('H:i',mktime(0,intdiv($diff,30)*30));
+
         $attendance = Attendance::findOrFail($id);
-		$attendance->userid = $request->input('userid');
-		$attendance->timein = $request->input('timein');
-		$attendance->timeout = $request->input('timeout');
-		$attendance->date = $request->input('date');
+        $attendance->timein = $request->input('timein');
+        $attendance->timeout = $request->input('timeout');
+        $attendance->date = $request->input('date');
+        $attendance->status = "pending";
+        $attendance->branchid = $request->input('branchid');
+        $attendance->duration = $newdiff;
         $attendance->save();
 
         return to_route('attendances.index');
@@ -102,6 +120,30 @@ class AttendancesController extends Controller
         $attendance = Attendance::findOrFail($id);
         $attendance->delete();
 
+        return to_route('attendances.index');
+    }
+
+    public function approveattendance()
+    {
+        $attendances= DB::table('attendances')
+            ->select('attendances.id', 'branches.name as bname', 'users.name as uname', 'attendances.timein', 'attendances.timeout', 'attendances.date', 'attendances.status', 'attendances.duration')
+            ->join('users','attendances.userid','=','users.id')
+            ->join('branches','attendances.branchid','=','branches.id')
+            ->get();
+        return view('components.admin_approve_attendance', ['attendances'=>$attendances]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function approve($id)
+    {
+        $attendance = Attendance::findOrFail($id);
+        $attendance->status = "verified";
+        $attendance->save();
         return to_route('attendances.index');
     }
 }
