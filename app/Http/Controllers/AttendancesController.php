@@ -123,12 +123,13 @@ class AttendancesController extends Controller
         return to_route('attendances.index');
     }
 
-    public function approveattendance()
+    public function pendingApprove()
     {
         $attendances= DB::table('attendances')
             ->select('attendances.id', 'branches.name as bname', 'users.name as uname', 'attendances.timein', 'attendances.timeout', 'attendances.date', 'attendances.status', 'attendances.duration')
             ->join('users','attendances.userid','=','users.id')
             ->join('branches','attendances.branchid','=','branches.id')
+            ->where('attendances.status', '=', 'pending')
             ->get();
         return view('components.admin_approve_attendance', ['attendances'=>$attendances]);
     }
@@ -139,11 +140,11 @@ class AttendancesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function approve($id)
+    public function verifyAttendance($id)
     {
         $attendance = Attendance::findOrFail($id);
         $attendance->status = "verified";
         $attendance->save();
-        return to_route('attendances.index');
+        return to_route('pendingApprove');
     }
 }

@@ -1,26 +1,20 @@
-@extends('default')
+@extends('layouts.app')
 
-@section('content')
+@section('title', 'Create Branch')
 
-	@if($errors->any())
-		<div class="alert alert-danger">
-			@foreach ($errors->all() as $error)
-				{{ $error }} <br>
-			@endforeach
-		</div>
-	@endif
+@section('contents')
+    <h1 class="mb-0">Add Branch</h1>
+    <hr />
+    {!! Form::open(['route' => 'branches.store']) !!}
 
-	{!! Form::open(['route' => 'branches.store']) !!}
-
-		<div class="mb-3">
-			{{ Form::label('name', 'Name', ['class'=>'form-label']) }}
-			{{ Form::text('name', null, array('class' => 'form-control')) }}
-		</div>
+    <div class="mb-3">
+        {{ Form::label('name', 'Name', ['class'=>'form-label']) }}
+        {{ Form::text('name', null, array('class' => 'form-control')) }}
+    </div>
 
 
-		{{ Form::submit('Create', array('class' => 'btn btn-primary')) }}
+    {{ Form::submit('Create', array('class' => 'btn btn-primary')) }}
 
-	{{ Form::close() }}
+    {{ Form::close() }}
 
-
-@stop
+@endsection

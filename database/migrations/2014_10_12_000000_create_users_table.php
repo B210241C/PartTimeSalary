@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('pnumber')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role');
+            $table->string('salary');
             $table->rememberToken();
             $table->timestamps();
         });

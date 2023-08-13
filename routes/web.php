@@ -25,7 +25,9 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::resource('branches', BranchesController::class);
 Route::resource('attendances', AttendancesController::class);
-Route::get('approveattendance',[AttendancesController::class,'approveattendance']);
-Route::post('approveattendance',[AttendancesController::class,'approve']);
+Route::get('dashboard', function () {return view('dashboard');})->name('dashboard');
+Route::get('pendingApprove',[AttendancesController::class,'pendingApprove'])->name('pendingApprove');
+Route::post('attendances/{id}',[AttendancesController::class,'verifyAttendance'])->name('verifyAttendance');
+
 
 

@@ -60,10 +60,10 @@ class BranchesController extends Controller
      *
      * @return \Illuminate\Contracts\View\View
      */
-    public function edit($id,$timein)
+    public function edit($id)
     {
         $branch = Branch::findOrFail($id);
-        return view('branches.edit',['branch'=>$branch,$timein]);
+        return view('branches.edit',['branch'=>$branch]);
     }
 
     /**
