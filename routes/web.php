@@ -38,6 +38,8 @@ Route::post('changeToUser/{id}',[UsersController::class,'changeToUser'])->name('
 Route::get('checkoutlist',[UsersController::class,'checkoutlist'])->name('checkoutlist');
 Route::post('checkout/{id}',[UsersController::class,'checkout'])->name('checkout');
 
+Route::get('userDashboard', function () {return view('userDashboard');})->name('userDashboard');
+
 
 
 

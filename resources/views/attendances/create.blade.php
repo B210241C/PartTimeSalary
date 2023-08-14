@@ -1,15 +1,10 @@
-@extends('default')
+@extends('layouts.userApp')
 
-@section('content')
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            @foreach ($errors->all() as $error)
-                {{ $error }} <br>
-            @endforeach
-        </div>
-    @endif
 
+@section('contents')
+    <h1 class="mb-0">Add Attendance</h1>
+    <hr />
     {!! Form::open(['route' => 'attendances.store']) !!}
 
     <div class="mb-3" hidden="true">
@@ -33,6 +28,9 @@
         <div class="bootstrap-timepicker">
             <input type="time" class="form-control timepicker" id="timein" name="timein" required>
         </div>
+        @error('timein')
+        <span class="invalid-feedback">{{ $message }}</span>
+        @enderror
     </div>
 
     <div class="form-group">
@@ -40,6 +38,9 @@
         <div class="bootstrap-timepicker">
             <input type="time" class="form-control timepicker" id="timeout" name="timeout" required>
         </div>
+        @error('timeout')
+        <span class="invalid-feedback">{{ $message }}</span>
+        @enderror
     </div>
 
     <div class="form-group">
@@ -54,5 +55,4 @@
 
     {{ Form::close() }}
 
-
-@stop
+@endsection

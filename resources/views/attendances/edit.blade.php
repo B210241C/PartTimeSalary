@@ -1,15 +1,10 @@
-@extends('default')
+@extends('layouts.userApp')
 
-@section('content')
+@section('title', 'Create Branch')
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            @foreach ($errors->all() as $error)
-                {{ $error }} <br>
-            @endforeach
-        </div>
-    @endif
-
+@section('contents')
+    <h1 class="mb-0">Add Branch</h1>
+    <hr />
     {{ Form::model($datas, array('route' => array('attendances.update', $datas->id), 'method' => 'PUT')) }}
     <div class="form-group">
         <label for="branch" class="col-sm-3 control-label">Branch</label>
@@ -46,4 +41,5 @@
     {{ Form::submit('Edit', array('class' => 'btn btn-primary')) }}
 
     {{ Form::close() }}
-@stop
+
+@endsection

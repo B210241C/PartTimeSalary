@@ -21,6 +21,7 @@ class AttendancesController extends Controller
         $attendances= DB::table('attendances')
             ->select('attendances.id','attendances.timein', 'attendances.timeout', 'attendances.date', 'attendances.status', 'attendances.duration','branches.name as bname')
             ->join('branches','attendances.branchid','=','branches.id')
+            ->where('attendances.userid', '=', Auth::id())
             ->get();
         return view('attendances.index', ['attendances'=>$attendances]);
     }
@@ -44,7 +45,14 @@ class AttendancesController extends Controller
      */
     public function store(AttendanceRequest $request)
     {
-        $diff=Carbon::parse($request->input('timein'))->diffInMinutes(Carbon::parse($request->input('timeout')));
+        $validatedData = $request->validate([
+            'timein' => 'required',
+            'timeout' => 'required|after:timein',
+            'branchid' => 'required',
+            'date' => 'required',
+        ]);
+
+        $diff=Carbon::parse($validatedData['timein'])->diffInMinutes(Carbon::parse($request->input('timeout')));
         $newdiff=date('H:i',mktime(0,intdiv($diff,30)*30));
 
 
