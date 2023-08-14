@@ -78,7 +78,6 @@ class AttendancesController extends Controller
      */
     public function edit($id)
     {
-
         $branches= Branch::all();
         $data= Attendance::findOrFail($id);
         return view('attendances.edit',['data'=>$branches,'datas'=>$data]);

@@ -3,7 +3,7 @@
 @section('contents')
     <div class="d-flex align-items-center justify-content-between">
         <h1 class="mb-0">Attendance List</h1>
-        <a href="{{ route('attendances.create') }}" class="btn btn-primary">Add Branch</a>
+        <a href="{{ route('attendances.create') }}" class="btn btn-primary">Add Attendance</a>
     </div>
     <hr />
     @if(Session::has('success'))

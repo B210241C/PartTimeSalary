@@ -27,7 +27,7 @@
                     <td class="align-middle">{{ $branch->name }}</td>
                     <td class="align-middle">
                         <div class="btn-toolbar">
-                            <a href="{{ route('branches.edit', [$branch->id]) }}" class="btn btn-warning">Edit</a>
+                            <a href="{{ route('branches.edit', [$branch->id]) }}" class="btn btn-primary">Edit</a>
                             <div></div>
                             {!! Form::open(['method' => 'DELETE','route' => ['branches.destroy', $branch->id],'onsubmit'=>"return confirm('Delete?')"]) !!}
                             {!! Form::submit('Delete', ['class' => 'btn btn-danger m-0']) !!}

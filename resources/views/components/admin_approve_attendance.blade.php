@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('contents')
+    <div class="d-flex align-items-center justify-content-between">
+        <h1 class="mb-0">Attendance Pending Verify</h1>
+    </div>
     <hr />
     @if(Session::has('success'))
         <div class="alert alert-success" role="alert">
