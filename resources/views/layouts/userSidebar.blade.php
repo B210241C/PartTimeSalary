@@ -3,7 +3,7 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('userDashboard') }}">
         <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+            <i class="fas fa-user-clock"></i>
         </div>
         <div class="sidebar-brand-text mx-3">User Panel</div>
     </a>
@@ -13,19 +13,22 @@
 
     <!-- Nav Item - Dashboard -->
 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('attendances.create') }}">
+            <i class="fa fa-plus"></i>
+            <span>Create Attendance</span></a>
+    </li>
 
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-           aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Attendance</span>
-        </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ route('attendances.index') }}">View Attendance</a>
-                <a class="collapse-item" href="{{ route('attendances.create') }}">Create Attendance</a>
-            </div>
-        </div>
+        <a class="nav-link" href="{{  route('attendances.index')}}">
+            <i class="fa fa-hourglass-half"></i>
+            <span>Unverified Attendance</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{  route('unpaid')}}">
+            <i class="fa fa-piggy-bank"></i>
+            <span><Unpaid></Unpaid> Unpaid</span></a>
     </li>
 
 

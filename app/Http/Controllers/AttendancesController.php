@@ -21,12 +21,14 @@ class AttendancesController extends Controller
      */
     public function index()
     {
-        $attendances= DB::table('attendances')
-            ->select('attendances.id','attendances.timein', 'attendances.timeout', 'attendances.date', 'attendances.status', 'attendances.duration','branches.name as bname')
-            ->join('branches','attendances.branchid','=','branches.id')
+        $attendances = DB::table('attendances')
+            ->select('attendances.id', 'attendances.timein', 'attendances.timeout', 'attendances.date', 'branches.name as bname')
+            ->join('branches', 'attendances.branchid', '=', 'branches.id')
             ->where('attendances.userid', '=', Auth::id())
+            ->where('attendances.status', '=', 'pending') // Add this line to filter by status
             ->get();
-        return view('attendances.index', ['attendances'=>$attendances]);
+
+        return view('attendances.index', ['attendances' => $attendances]);
     }
 
     /**
@@ -55,10 +57,8 @@ class AttendancesController extends Controller
             'date' => 'required',
         ]);
 
-        $diff=Carbon::parse($validatedData['timein'])->diffInMinutes(Carbon::parse($request->input('timeout')));
-        $newdiff=date('H:i',mktime(0,intdiv($diff,30)*30));
-
-
+        $diff = Carbon::parse($validatedData['timein'])->diffInMinutes(Carbon::parse($request->input('timeout')));
+        $newdiff = date('H:i', mktime(0, intdiv($diff, 30) * 30));
 
         $attendance = new Attendance;
         $attendance->userid = Auth::id();
@@ -68,9 +68,14 @@ class AttendancesController extends Controller
         $attendance->status = "pending";
         $attendance->branchid = $request->input('branchid');
         $attendance->duration = $newdiff;
-        $attendance->save();
 
-        return to_route('attendances.index');
+        if ($attendance->save()) {
+            // Success: Redirect to a success page or perform other actions
+            return redirect()->route('attendances.index'); // Replace with the actual route name
+        } else {
+            // Error: Redirect back with error message
+            return redirect()->back()->withInput()->withErrors(['error' => 'Failed to create attendance record.']);
+        }
     }
 
     /**
@@ -102,22 +107,35 @@ class AttendancesController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(AttendanceRequest $request, $id)
-
     {
-        $diff=Carbon::parse($request->input('timein'))->diffInMinutes(Carbon::parse($request->input('timeout')));
-        $newdiff=date('H:i',mktime(0,intdiv($diff,30)*30));
+        try {
+            // Validate the request
+            $validatedData = $request->validate([
+                'timein' => 'required',
+                'timeout' => 'required',
+                'date' => 'required',
+                'branchid' => 'required',
+                // Add other validation rules as needed
+            ]);
 
-        $attendance = Attendance::findOrFail($id);
-        $attendance->timein = $request->input('timein');
-        $attendance->timeout = $request->input('timeout');
-        $attendance->date = $request->input('date');
-        $attendance->status = "pending";
-        $attendance->branchid = $request->input('branchid');
-        $attendance->duration = $newdiff;
-        $attendance->save();
+            $diff = Carbon::parse($validatedData['timein'])->diffInMinutes(Carbon::parse($validatedData['timeout']));
+            $newdiff = date('H:i', mktime(0, intdiv($diff, 30) * 30));
 
-        return to_route('attendances.index');
+            $attendance = Attendance::findOrFail($id);
+            $attendance->timein = $validatedData['timein'];
+            $attendance->timeout = $validatedData['timeout'];
+            $attendance->date = $validatedData['date'];
+            $attendance->status = "pending";
+            $attendance->branchid = $validatedData['branchid'];
+            $attendance->duration = $newdiff;
+            $attendance->save();
+
+            return redirect()->route('attendances.index')->with('success', 'Attendance record updated successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'An error occurred while updating the record.');
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -206,7 +224,29 @@ class AttendancesController extends Controller
         return view('components.userVerifiedAttendances', compact('user', 'verifiedAttendances', 'userSalary'));
     }
 
+    public function markAsPaid($id)
+    {
+        $attendance = Attendance::findOrFail($id); // Retrieve the attendance by its ID
 
+        // Update the status to 'paid'
+        $attendance->status = 'paid';
+        $attendance->save();
+
+        // You can redirect back to the previous page or perform any other action you need
+        return view('components.checkoutlist');
+    }
+
+    public function unpaid()
+    {
+        $attendances = DB::table('attendances')
+            ->select('attendances.id', 'attendances.timein', 'attendances.timeout', 'attendances.date', 'branches.name as bname')
+            ->join('branches', 'attendances.branchid', '=', 'branches.id')
+            ->where('attendances.userid', '=', Auth::id())
+            ->where('attendances.status', '=', 'verified') // Add this line to filter by status
+            ->get();
+
+        return view('attendances.unpaid', ['attendances' => $attendances]);
+    }
 
 
 }
