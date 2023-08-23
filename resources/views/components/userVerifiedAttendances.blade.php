@@ -46,6 +46,7 @@
         <p>Total Selected Duration: <span id="total-duration">0:00</span></p>
         <p>Total Salary: RM <span id="total-salary">0.00</span></p>
     </div>
+    <a href="{{ route('markAsPaid', ['id' => $attendance->id]) }}" class="btn btn-primary">Mark as Paid</a>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

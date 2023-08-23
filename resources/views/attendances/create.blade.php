@@ -1,11 +1,21 @@
 @extends('layouts.userApp')
 
-
-
 @section('contents')
     <h1 class="mb-0">Add Attendance</h1>
     <hr />
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     {!! Form::open(['route' => 'attendances.store']) !!}
+
 
     <div class="mb-3" hidden="true">
         {{ Form::label('userid', 'Userid', ['class'=>'form-label']) }}
@@ -50,8 +60,7 @@
         </div>
     </div>
 
-
-    {{ Form::submit('Create', array('class' => 'btn btn-primary')) }}
+    {{ Form::submit('Create', ['class' => 'btn btn-primary']) }}
 
     {{ Form::close() }}
 

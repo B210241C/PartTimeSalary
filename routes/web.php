@@ -28,6 +28,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('userDashboard', function () {return view('userDashboard');})->name('userDashboard');
 Route::resource('attendances', AttendancesController::class);
+Route::get('unpaid',[AttendancesController::class,'unpaid'])->name('unpaid');
 
 
 
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('checkoutlist',[UsersController::class,'checkoutlist'])->name('checkoutlist');
     Route::post('checkout/{id}',[UsersController::class,'checkout'])->name('checkout');
     Route::get('userVerifiedAttendances/{userId}', [AttendancesController::class, 'userVerifiedAttendances'])->name('userVerifiedAttendances');
+    Route::get('/mark-as-paid/{id}', [AttendancesController::class, 'markAsPaid'])->name('markAsPaid');
 
     Route::get('pendingApprove',[AttendancesController::class,'pendingApprove'])->name('pendingApprove');
     Route::post('attendances/{id}',[AttendancesController::class,'verifyAttendance'])->name('verifyAttendance');
