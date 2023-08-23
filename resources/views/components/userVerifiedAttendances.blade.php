@@ -9,6 +9,7 @@
     <table class="table table-bordered">
         <thead>
         <tr>
+            <input type="checkbox" id="select-all-checkbox">
             <th>Date</th>
             <th>Branch</th>
             <th>Time In</th>
@@ -47,13 +48,11 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
         $(document).ready(function() {
             let totalDuration = 0;
             let userSalary = {{ $userSalary }}; // Pass the user's salary to JavaScript
-
-            // Trigger checkbox change for all checkboxes to calculate initial values
-            $('.attendance-checkbox').trigger('change');
 
             $('.attendance-checkbox').change(function() {
                 const duration = parseInt($(this).data('duration'));
@@ -74,5 +73,4 @@
             });
         });
     </script>
-
 @endsection
