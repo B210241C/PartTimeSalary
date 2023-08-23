@@ -8,12 +8,6 @@
     <form action="{{ route('searchAttendances') }}" method="GET">
         <div class="input-group mb-3">
             <input type="text" name="search" class="form-control" placeholder="Search by user or branch" aria-describedby="searchButton">
-            <select name="year" class="form-control">
-                <option value="">Select Year</option>
-                @for ($i = date('Y'); $i >= 2020; $i--)
-                    <option value="{{ $i }}">{{ $i }}</option>
-                @endfor
-            </select>
             <select name="month" class="form-control">
                 <option value="">Select Month</option>
                 @for ($i = 1; $i <= 12; $i++)
@@ -32,14 +26,12 @@
     <table class="table table-hover">
         <thead class="table-primary">
         <tr>
-            <th>No</th>
             <th>User</th>
             <th>Outlet</th>
-            <th>Time In</th>
-            <th>Time Out</th>
+            <th>From</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Working Hour</th>
+            <th>Time Range (H)</th>
             <th>Action</th>
         </tr>
         </thead>
@@ -47,15 +39,28 @@
         @if($attendances->count() > 0)
             @foreach($attendances as $attendance)
                 <tr>
-                    <td>{{ $attendance->id }}</td>
                     <td>{{ $attendance->uname }}</td>
                     <td>{{ $attendance->bname }}</td>
-                    <td>{{ $attendance->timein }}</td>
-                    <td>{{ $attendance->timeout }}</td>
-                    <td>{{ $attendance->date }}</td>
+                    <td>
+                        @php
+                            $timeIn = new DateTime($attendance->timein);
+                            $timeOut = new DateTime($attendance->timeout);
+                            $formattedTimeIn = $timeIn->format('g.iA');
+                            $formattedTimeOut = $timeOut->format('g.iA');
+                            echo $formattedTimeIn . ' to ' . $formattedTimeOut;
+                        @endphp
+                    </td>
+                    <td>{{ date('d F', strtotime($attendance->date)) }}</td>
                     <td>{{ $attendance->status }}</td>
-                    <td>{{ $attendance->duration }}</td>
-
+                    <td>
+                        @php
+                            $timeInterval = $timeOut->diff($timeIn);
+                            $hours = $timeInterval->h;
+                            $minutes = $timeInterval->i;
+                            $decimalHours = $hours + ($minutes / 60);
+                            echo number_format($decimalHours, 1);
+                        @endphp
+                    </td>
                     <td>
                         <div class="d-flex gap-2">
                             {!! Form::open(['method' => 'POST','route' => ['verifyAttendance', $attendance->id]]) !!}
@@ -63,11 +68,12 @@
                             {!! Form::close() !!}
                         </div>
                     </td>
+
                 </tr>
             @endforeach
         @else
             <tr>
-                <td class="text-center" colspan="5">No Result</td>
+                <td class="text-center" colspan="6">No Result</td>
             </tr>
         @endif
         </tbody>

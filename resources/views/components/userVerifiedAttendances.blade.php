@@ -9,7 +9,6 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <input type="checkbox" id="select-all-checkbox">
             <th>Date</th>
             <th>Branch</th>
             <th>Time In</th>

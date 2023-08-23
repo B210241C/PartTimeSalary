@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 
 
+
 class AttendancesController extends Controller
 {
     /**
@@ -233,7 +234,23 @@ class AttendancesController extends Controller
         $attendance->save();
 
         // You can redirect back to the previous page or perform any other action you need
-        return view('components.checkoutlist');
+        $users=
+            DB::table('attendances')
+                ->join('users', 'users.id', '=', 'attendances.userid')
+                ->select(
+                    'attendances.userid',
+                    DB::raw('COUNT(*) AS count'),
+                    'users.id AS uid',
+                    'users.name AS uname',
+                    DB::raw('SUM(attendances.duration) AS total_duration'),
+                    'users.salary',
+                    'users.pnumber',
+                    'users.email'
+                )
+                ->groupBy('attendances.userid', 'users.id', 'users.name', 'users.salary', 'users.pnumber', 'users.email')
+                ->where('attendances.status', '=', 'verified')
+                ->get();
+        return view('components.checkoutlist', ['users'=>$users]);
     }
 
     public function unpaid()

@@ -13,7 +13,6 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>No</th>
             <th>Name</th>
             <th>Phone Number</th>
             <th>Hourly Wages</th>
@@ -26,7 +25,6 @@
         @foreach($users as $user)
 
             <tr>
-                <td>{{ $user->id }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->pnumber }}</td>
                 <td>{{ $user->salary }}</td>
