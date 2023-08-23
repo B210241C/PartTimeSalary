@@ -8,6 +8,8 @@ use App\Http\Requests\AttendanceRequest;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+
 
 class AttendancesController extends Controller
 {
@@ -154,4 +156,39 @@ class AttendancesController extends Controller
         $attendance->save();
         return to_route('pendingApprove');
     }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+        $year = $request->input('year');
+        $month = $request->input('month');
+
+        $query = DB::table('attendances')
+            ->select('attendances.id', 'branches.name as bname', 'users.name as uname', 'attendances.timein', 'attendances.timeout', 'attendances.date', 'attendances.status', 'attendances.duration')
+            ->join('users', 'attendances.userid', '=', 'users.id')
+            ->join('branches', 'attendances.branchid', '=', 'branches.id')
+            ->where('attendances.status', '=', 'pending');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('users.name', 'like', '%' . $search . '%')
+                    ->orWhere('branches.name', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($year) {
+            $query->whereYear('attendances.date', $year);
+        }
+
+        if ($month) {
+            $query->whereMonth('attendances.date', $month);
+        }
+
+        $attendances = $query->get();
+
+        return view('components.admin_approve_attendance', ['attendances' => $attendances]);
+    }
+
+
+
 }

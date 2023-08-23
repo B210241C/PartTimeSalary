@@ -5,6 +5,25 @@
         <h1 class="mb-0">Attendance Pending Verify</h1>
     </div>
     <hr />
+    <form action="{{ route('searchAttendances') }}" method="GET">
+        <div class="input-group mb-3">
+            <input type="text" name="search" class="form-control" placeholder="Search by user or branch" aria-describedby="searchButton">
+            <select name="year" class="form-control">
+                <option value="">Select Year</option>
+                @for ($i = date('Y'); $i >= 2020; $i--)
+                    <option value="{{ $i }}">{{ $i }}</option>
+                @endfor
+            </select>
+            <select name="month" class="form-control">
+                <option value="">Select Month</option>
+                @for ($i = 1; $i <= 12; $i++)
+                    <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}">{{ date('F', mktime(0, 0, 0, $i, 1)) }}</option>
+                @endfor
+            </select>
+            <button class="btn btn-primary" type="submit" id="searchButton">Search</button>
+        </div>
+    </form>
+
     @if(Session::has('success'))
         <div class="alert alert-success" role="alert">
             {{ Session::get('success') }}
@@ -48,7 +67,7 @@
             @endforeach
         @else
             <tr>
-                <td class="text-center" colspan="5">No Attendance Need To Approve</td>
+                <td class="text-center" colspan="5">No Result</td>
             </tr>
         @endif
         </tbody>

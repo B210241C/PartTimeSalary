@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::resource('users', UsersController::class);
     Route::resource('branches', BranchesController::class);
     Route::get('pendingApprove',[AttendancesController::class,'pendingApprove'])->name('pendingApprove');
+    Route::get('/search', [AttendancesController::class,'search'])->name('searchAttendances');
     Route::post('attendances/{id}',[AttendancesController::class,'verifyAttendance'])->name('verifyAttendance');
     Route::get('adminIndex',[UsersController::class,'adminIndex'])->name('adminIndex');
 });
