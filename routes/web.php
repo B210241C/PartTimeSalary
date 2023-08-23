@@ -37,6 +37,8 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::post('changeToUser/{id}',[UsersController::class,'changeToUser'])->name('changeToUser');
     Route::get('checkoutlist',[UsersController::class,'checkoutlist'])->name('checkoutlist');
     Route::post('checkout/{id}',[UsersController::class,'checkout'])->name('checkout');
+    Route::get('userVerifiedAttendances/{userId}', [AttendancesController::class, 'userVerifiedAttendances'])->name('userVerifiedAttendances');
+
     Route::get('pendingApprove',[AttendancesController::class,'pendingApprove'])->name('pendingApprove');
     Route::post('attendances/{id}',[AttendancesController::class,'verifyAttendance'])->name('verifyAttendance');
     Route::get('adminIndex',[UsersController::class,'adminIndex'])->name('adminIndex');

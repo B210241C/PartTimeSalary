@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 
 class AttendancesController extends Controller
@@ -188,6 +189,23 @@ class AttendancesController extends Controller
 
         return view('components.admin_approve_attendance', ['attendances' => $attendances]);
     }
+
+    public function userVerifiedAttendances($userId)
+    {
+        $user = User::find($userId);
+
+        $verifiedAttendances = Attendance::where('userid', $userId)
+            ->where('status', 'verified')
+            ->join('branches', 'attendances.branchid', '=', 'branches.id')
+            ->select('attendances.*', 'branches.name as branch_name')
+            ->get();
+
+        // Retrieve the user's salary from the database
+        $userSalary = $user->salary;
+
+        return view('components.userVerifiedAttendances', compact('user', 'verifiedAttendances', 'userSalary'));
+    }
+
 
 
 

@@ -41,8 +41,10 @@
                 <td>
                     <div class="d-flex gap-2">
                         {!! Form::open(['method' => 'POST','route' => ['checkout', $user->uid]]) !!}
-                        {!! Form::submit('Checkout', ['class' => 'btn btn-primary']) !!}
+                        {!! Form::submit('Pay All', ['class' => 'btn btn-primary']) !!}
                         {!! Form::close() !!}
+
+                        <a href="{{ route('userVerifiedAttendances', ['userId' => $user->uid]) }}" class="btn btn-success">Detail</a>
                     </div>
                 </td>
             </tr>
