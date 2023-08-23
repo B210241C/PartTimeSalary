@@ -6,12 +6,7 @@
         <a href="{{ route('attendances.create') }}" class="btn btn-primary">Add Attendance</a>
     </div>
     <hr />
-{{--    <label for="search" class="block text-sm mt-4 ">--}}
-{{--        <h3 class="text-gray-700 dark:text-gray-400">Search:</h3>--}}
-{{--        <input type="text" id="search" name="search"--}}
-{{--               class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"--}}
-{{--               placeholder="Type to Search" required />--}}
-{{--    </label>--}}
+{{--    ph--}}
     @if(Session::has('success'))
         <div class="alert alert-success" role="alert">
             {{ Session::get('success') }}
