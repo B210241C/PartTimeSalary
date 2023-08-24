@@ -225,32 +225,13 @@ class AttendancesController extends Controller
         return view('components.userVerifiedAttendances', compact('user', 'verifiedAttendances', 'userSalary'));
     }
 
-    public function markAsPaid($id)
+    public function markMultipleAsPaid(Request $request)
     {
-        $attendance = Attendance::findOrFail($id); // Retrieve the attendance by its ID
+        $attendanceIds = $request->input('attendance_ids', []);
 
-        // Update the status to 'paid'
-        $attendance->status = 'paid';
-        $attendance->save();
+        // Update the selected attendance records' status to 'paid'
+        Attendance::whereIn('id', $attendanceIds)->update(['status' => 'paid']);
 
-        // You can redirect back to the previous page or perform any other action you need
-        $users=
-            DB::table('attendances')
-                ->join('users', 'users.id', '=', 'attendances.userid')
-                ->select(
-                    'attendances.userid',
-                    DB::raw('COUNT(*) AS count'),
-                    'users.id AS uid',
-                    'users.name AS uname',
-                    DB::raw('SUM(attendances.duration) AS total_duration'),
-                    'users.salary',
-                    'users.pnumber',
-                    'users.email'
-                )
-                ->groupBy('attendances.userid', 'users.id', 'users.name', 'users.salary', 'users.pnumber', 'users.email')
-                ->where('attendances.status', '=', 'verified')
-                ->get();
-        return view('components.checkoutlist', ['users'=>$users]);
     }
 
     public function unpaid()

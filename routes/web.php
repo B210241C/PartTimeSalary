@@ -39,7 +39,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('checkoutlist',[UsersController::class,'checkoutlist'])->name('checkoutlist');
     Route::post('checkout/{id}',[UsersController::class,'checkout'])->name('checkout');
     Route::get('userVerifiedAttendances/{userId}', [AttendancesController::class, 'userVerifiedAttendances'])->name('userVerifiedAttendances');
-    Route::get('/mark-as-paid/{id}', [AttendancesController::class, 'markAsPaid'])->name('markAsPaid');
+    Route::post('/mark-as-paid', [AttendancesController::class, 'markMultipleAsPaid'])->name('markMultipleAsPaid');
 
     Route::get('pendingApprove',[AttendancesController::class,'pendingApprove'])->name('pendingApprove');
     Route::post('attendances/{id}',[AttendancesController::class,'verifyAttendance'])->name('verifyAttendance');
